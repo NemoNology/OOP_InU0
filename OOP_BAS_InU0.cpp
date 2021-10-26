@@ -1,111 +1,148 @@
 ﻿#include <iostream>
-#include <iomanip>
-#include <vector>
-
-using namespace std;
+#include <vector> // Подключённые библиотеки, нужные для работы...
+#include <fstream>
 
 
-// Пространство имён VecFun - Vector's Functions
-namespace VecFun { 
+using namespace std; // Для моего удобства
 
-    // Функция вывода 1D вектора
-    void Show_1D_Vector(const vector<int>& vec) {
 
-        cout << "\n\n"; cout << setw(8);
-        for (unsigned i = 0; i < vec.size(); i++) {
 
-            cout << vec[i] << " ";
+// Вывод 2Д массива на экран 
+void Show_2D_Int_Vector(const vector<vector<int>> &v) {
 
+    cout << "\n\n";
+
+    for (unsigned i = 0; i < v.size(); i++) {
+        cout << "\t";
+        for (unsigned j = 0; j < v[i].size(); j++) {
+
+            cout << v[i][j] << "\t";
         }
-        cout << "\n\n\n";
-
+        cout << endl;
     }
-
-
-    // Функция заполнения 1D вектора
-    void Fill_1D_Vector(vector<int>& vec) {
-
-        for (unsigned i = 0; i < vec.size(); i++) {
-
-            vec[i] = rand() % 200 - 100;
-
-        }
-
-    }
-
+    cout << "\n\n";
 
 }
 
+// Заполнение 2Д массива случайными int переменными
+void Random_Fill_2D_Int_Vector(vector<vector<int>>& v) {
 
-// Пространство имён Expection. Оно создано для функций, методов без вектора
-namespace Expection {
+    for (unsigned i = 0; i < v.size(); i++) {
 
+        v[i].resize(v.size());
 
-    float sum(float a, float b) { return a + b; }
+        for (unsigned j = 0; j < v[i].size(); j++) {
 
-    void fac(unsigned &f) {
-
-        unsigned s = f; // Создаём переменную для ограничения цикла for, ибо f будет менятся...
-
-        for (unsigned i = 2; i < s; i++) {
-
-            f *= i;
+            v[i][j] = rand() % 200 - 80;
 
         }
     }
-}
 
-
-// Пространство имён Expection. Оно создано для использования новой функции fac
-namespace Lol {
-
-    unsigned fac(unsigned f) {
-
-        if ((f == 1) || (f == 0)) { return 1; }
-
-        else { return f * fac(f - 1); }
-
-    }
 }
 
 
 
 
 
+
+
+
+// Запись 2Д массива в файл
+void Record_2D_Int_Vector_to_File(fstream& f, const vector<vector<int>>& v) {
+
+    f << "\n\n";
+
+    for (unsigned i = 0; i < v.size(); i++) {
+        f << "\t";
+        for (unsigned j = 0; j < v[i].size(); j++) {
+
+            f << v[i][j] << "\t";
+        }
+        f << endl;
+    }
+    f << "\n\n";
+
+}
+
+// Todo:
+// Чтение файла
+void File_Read(fstream& f, string file_name) {
+
+    string s;
+
+    f.open(file_name);
+
+    if (f.is_open()) {
+
+        f >> s;
+        std::cout << s;
+
+    }
+
+    f.close();
+
+
+}
+
+
+// Проверка на наличие файла
+bool File_Check(fstream &f) {
+
+    if (!f) {
+        throw (invalid_argument("Нет там такого файла..."));
+    }
+    else {
+        return 0;
+    }
+}
 
 int main()
 {
     setlocale(LC_ALL, "Russian");
 
-    unsigned n = 10;
+    // Задаём размерность массива
+    unsigned n = 5;
+
+    // Создаём 2Д массив
+    vector<vector<int>> Vector0(n);
 
 
-    // Создаём векторы для теста
-    vector<int> vec1(n);
-    vector<int> vec2;  
-    vector<float> vec3(n);
+    // Заполняем данный массив
+    cout << "\n\nСлучайный 2-ухмерный массив:";
+    Random_Fill_2D_Int_Vector(Vector0);
+    Show_2D_Int_Vector(Vector0);
 
 
-    // Заполняем, выаоди векторы для тестов...
-    VecFun::Fill_1D_Vector(vec1);
-
-    using namespace VecFun;
-
-    Show_1D_Vector(vec1);
-
-    Fill_1D_Vector(vec2);
-    Show_1D_Vector(vec2);
-
-    // "Играемся" с функцией и методом получения факториала
-    unsigned rn = rand() % n;
-    unsigned fac = 5;
-
-    // Выводим результаты функции и метода
-    cout << "\n\n\t\tФакториал Lol: " << Lol::fac(fac);
-    Expection::fac(fac);
-    cout << "\n\n\t\tФакториал Expection: " << fac << "\n\n\n";
-
+    cout << "Работа с файлом:\n";
+    // Создаём fstream для дальнейшей работы с файлом
+    fstream F_Arr0("R:\Array0.txt");
+    fstream F1("R:\Array1.txt");
     
-    system("pause");
+
+    // Проверка наличия файла
+    /*
+    * cout << "\nПроверка наличия файла:\n";
+    try {
+        File_Check(F_Arr0);
+        cout << "\nФайл по указанному пути есть!\n";
+    }
+    catch (invalid_argument e) {
+
+        cout << "\nФайла, по указанному пути не существует!\n";
+
+    }
+    */
+    
+
+
+
+
+    // Проверяем чтение\запись файла...
+    File_Read(F_Arr0, "Array0.txt");
+
+
+
+    cout << "\n\n\n";
+    system("pause"); // Делаем доп. паузу для удобства пользователя
     return 0;
 }
